@@ -1,0 +1,193 @@
+#---
+# title: Analisis de Series de Tiempo No Lineal CO FR
+#---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+library("tseriesChaos", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+require(scatterplot3d)
+
+library("dplyr", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+
+
+library("dplyr", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+
+library(readr)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+```{r}
+library(readr)
+CO_cases <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Practica-II-Covid-1/Presentacion/CO_cases")
+FR_cases <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Practica-II-Covid-1/Presentacion/FR_cases")
+
+CO_deaths <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Practica-II-Covid-1/Presentacion/CO_deaths")
+FR_deaths <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Practica-II-Covid-1/Presentacion/FR_deaths")
+
+CO_cases = CO_cases[[1]]
+FR_cases = FR_cases[[1]]
+CO_deaths = CO_deaths[[1]]
+FR_deaths = FR_deaths[[1]]
+```
+
+```{r}
+# Sacamos el tiempo de delay
+
+windows()
+lm <- 40
+mutual_CO_cases = mutual(CO_cases, lag.max=lm)
+
+windows()
+lm <- 40
+mutual_FR_cases = mutual(FR_cases, lag.max=lm)
+
+windows()
+lm <- 40
+mutual_CO_deaths = mutual(CO_deaths, lag.max=lm)
+
+windows()
+lm <- 40
+mutual_FR_deaths = mutual(FR_deaths, lag.max=lm)
+
+# Lo pasamos a csv para trabajar en python
+
+df <- data.frame(mutual_CO_cases = as.vector(mutual_CO_cases),
+                 mutual_FR_cases = as.vector(mutual_FR_cases),
+                 mutual_CO_deaths = as.vector(mutual_CO_deaths),
+                 mutual_FR_deaths = as.vector(mutual_FR_deaths))
+
+write.csv(df,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Practica-II-Covid-1\\Presentacion\\AMI_CO_FR.csv", row.names = FALSE)
+```
+```{r}
+# Veamos una estimacion de la Theiler Window
+
+library("nonlinearTseries", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+
+windows()
+require(nonlinearTseries)
+spaceTimePlot(time.series=CO_cases,embedding.dim=3,time.lag=6,
+              time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
+              main="",xlab="Separation in time",ylab="Separation in space")
+# da 10 (malo)
+
+windows()
+require(nonlinearTseries)
+spaceTimePlot(time.series=FR_cases,embedding.dim=3,time.lag=5,
+              time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
+              main="",xlab="Separation in time",ylab="Separation in space")
+# 10
+
+windows()
+require(nonlinearTseries)
+spaceTimePlot(time.series=CO_deaths,embedding.dim=3,time.lag=8,
+              time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
+              main="",xlab="Separation in time",ylab="Separation in space")
+# 14
+
+windows()
+require(nonlinearTseries)
+spaceTimePlot(time.series=FR_deaths,embedding.dim=3,time.lag=5,
+              time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
+              main="",xlab="Separation in time",ylab="Separation in space")
+# 13
+
+```
+
+```{r}
+# Calculamos la dimension de inmersion con FNN
+
+windows()
+m.max<- 6 # embedding dimensions: from 1 to m_max
+d<- 6 # tentative time delay (see below)
+tw<- 10 # Theiler window
+rt<- 10 # escape factor
+eps<- sd(CO_cases)/10 # neighbourhood diameter
+fn_CO_cases <- false.nearest(CO_cases,m.max,d,tw,rt,eps)
+fn_CO_cases
+
+plot(fn_CO_cases)     # da una dimension de inmersion m = 5
+
+
+windows()
+m.max<-  # embedding dimensions: from 1 to m_max
+d<- 5 # tentative time delay (see below)
+tw<- 10 # Theiler window
+rt<- 10 # escape factor
+eps<- sd(FR_cases)/10 # neighbourhood diameter
+fn_FR_cases <- false.nearest(FR_cases,m.max,d,tw,rt,eps)
+fn_FR_cases
+
+plot(fn_FR_cases)     # da una dimension de inmersion m = 4
+
+
+windows()
+m.max<- 6 # embedding dimensions: from 1 to m_max
+d<- 8 # tentative time delay (see below)
+tw<- 14#13 # Theiler window
+rt<- 10 # escape factor
+eps<- sd(CO_deaths)/10 # neighbourhood diameter
+fn_CO_deaths <- false.nearest(CO_deaths,m.max,d,tw,rt,eps)
+fn_CO_deaths
+
+plot(fn_CO_deaths)     # da una dimension de inmersion m = 3
+
+
+windows()
+m.max<- 6 # embedding dimensions: from 1 to m_max
+d<- 5 # tentative time delay (see below)
+tw<- 13 # Theiler window
+rt<- 10 # escape factor
+eps<- sd(FR_deaths)/10 # neighbourhood diameter
+fn_FR_deaths <- false.nearest(FR_deaths,m.max,d,tw,rt,eps)
+fn_FR_deaths
+
+plot(fn_FR_deaths)     # da una dimension de inmersion m = 3
+
+
+```
+```{r}
+# Calculemos los MCLE
+
+windows()
+S_nu_CO_cases <- lyap_k(CO_cases,m=3,d=6,t=10,k=4,ref=230,s=40,eps=0.2)
+plot(S_nu_CO_cases,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_CO_cases = as.vector(S_nu_CO_cases)
+
+windows()
+S_nu_FR_cases <- lyap_k(FR_cases,m=3,d=5,t=10,k=4,ref=260,s=40,eps=0.2)
+plot(S_nu_FR_cases,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_FR_cases = as.vector(S_nu_FR_cases)
+
+windows()
+S_nu_CO_deaths <- lyap_k(CO_deaths,m=3,d=8,t=14,k=4,ref=200,s=40,eps=0.2)
+plot(S_nu_CO_deaths,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_CO_deaths = as.vector(S_nu_CO_deaths)
+
+windows()
+S_nu_FR_deaths <- lyap_k(FR_deaths,m=3,d=5,t=13,k=4,ref=250,s=40,eps=0.4)
+plot(S_nu_FR_deaths,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_FR_deaths = as.vector(S_nu_FR_deaths)
+```
+```{r}
+
+df_S_nu_CO_FR <- data.frame(S_nu_CO_cases = as.vector(S_nu_CO_cases),
+                 S_nu_FR_cases = as.vector(S_nu_FR_cases),
+                 S_nu_CO_deaths = as.vector(S_nu_CO_deaths),
+                 S_nu_FR_deaths = as.vector(S_nu_FR_deaths))
+
+write.csv(df_S_nu_CO_FR,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Practica-II-Covid-1\\Presentacion\\S_nu_CO_FR.csv", row.names = FALSE)
+
+
+```
+

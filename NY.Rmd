@@ -1,0 +1,129 @@
+#---
+# title: Analisis de Series de Tiempo No Lineal FR
+#---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by pFRcing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+library("tseriesChaos", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+require(scatterplot3d)
+
+library("dplyr", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+
+
+library("dplyr", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+
+library(readr)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run aCO R code chunks. Instead, the output of the chunk when it was FRst run in the editor is dispFRyed.
+```{r}
+library(readr)
+NY_cases <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Practica-II-Covid-1/Presentacion/NY_cases")
+NY_deaths <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Practica-II-Covid-1/Presentacion/NY_deaths")
+
+NY_cases = NY_cases[[1]]
+NY_deaths = NY_deaths[[1]]
+```
+
+```{r}
+# Sacamos el tiempo de delay
+
+windows()
+lm <- 40
+mutual_NY_cases = mutual(NY_cases, lag.max=lm)
+
+windows()
+lm <- 40
+mutual_NY_deaths = mutual(NY_deaths, lag.max=lm)
+
+# Lo pasamos a csv para trabajar en python
+
+df <- data.frame(mutual_NY_cases = as.vector(mutual_NY_cases),
+                 mutual_NY_deaths = as.vector(mutual_NY_deaths))
+
+write.csv(df,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Practica-II-Covid-1\\Presentacion\\AMI_NY.csv", row.names = FALSE)
+```
+```{r}
+# Veamos una estimacion de la Theiler Window
+
+library("nonlinearTseries", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+
+windows()
+require(nonlinearTseries)
+spaceTimePlot(time.series=NY_cases,embedding.dim=3,time.lag=4,
+              time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
+              main="",xlab="Separation in time",ylab="Separation in space")
+# da 12
+
+
+windows()
+require(nonlinearTseries)
+spaceTimePlot(time.series=NY_deaths,embedding.dim=3,time.lag=9,
+              time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
+              main="",xlab="Separation in time",ylab="Separation in space")
+# 25 (muy mala)
+
+```
+
+```{r}
+# Calculamos la dimension de inmersion con FNN
+
+windows()
+m.max<- 6 # embedding dimensions: from 1 to m_max
+d<- 5 # tentative time deFRy (see below)
+tw<- 12 # Theiler window
+rt<- 10 # escape factor
+eps<- sd(NY_cases)/10 # neighbourhood diameter
+fn_NY_cases <- false.nearest(NY_cases,m.max,d,tw,rt,eps)
+fn_NY_cases
+
+plot(fn_NY_cases)     # da una dimension de inmersion m = 5
+
+
+
+windows()
+m.max<- 6 # embedding dimensions: from 1 to m_max
+d<- 4 # tentative time deFRy (see below)
+tw<- 25#13 # Theiler window
+rt<- 10 # escape factor
+eps<- sd(NY_deaths)/10 # neighbourhood diameter
+fn_NY_deaths <- false.nearest(NY_deaths,m.max,d,tw,rt,eps)
+fn_NY_deaths
+
+plot(fn_NY_deaths)     # da una dimension de inmersion m = 3
+
+
+```
+```{r}
+# Calculemos los MCLE
+
+windows()
+S_nu_NY_cases <- lyap_k(NY_cases,m=3,d=5,t=12,k=4,ref=200,s=40,eps=0.2)
+plot(S_nu_NY_cases,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_NY_cases = as.vector(S_nu_NY_cases)
+
+windows()
+S_nu_NY_deaths <- lyap_k(NY_deaths,m=3,d=4,t=18,k=6,ref=200,s=40,eps=0.2)
+plot(S_nu_NY_deaths,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_NY_deaths = as.vector(S_nu_NY_deaths)
+
+```
+```{r}
+
+df_S_nu_NY <- data.frame(S_nu_NY_cases = as.vector(S_nu_NY_cases),
+                 S_nu_NY_deaths = as.vector(S_nu_NY_deaths))
+
+write.csv(df_S_nu_NY,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Practica-II-Covid-1\\Presentacion\\S_nu_NY.csv", row.names = FALSE)
+
+
+```
+
