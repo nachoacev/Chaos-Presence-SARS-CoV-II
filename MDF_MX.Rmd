@@ -1,0 +1,257 @@
+#---
+# title: Analisis de Series de Tiempo No Lineal MX MDF
+#---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+library("tseriesChaos", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+require(scatterplot3d)
+
+library("dplyr", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+
+
+library("dplyr", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+
+library(readr)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+```{r}
+library(readr)
+MDF_cases <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/MDF_cases")
+MX_cases <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/MX_cases")
+
+MDF_deaths <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/MDF_deaths")
+MX_deaths <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/MX_deaths")
+
+MDF_cases = MDF_cases[[1]]
+MX_cases = MX_cases[[1]]
+MDF_deaths = MDF_deaths[[1]]
+MX_deaths = MX_deaths[[1]]
+```
+
+```{r}
+# Sacamos el tiempo de delay
+
+windows()
+lm <- 40
+mutual_MDF_cases = mutual(MDF_cases, lag.max=lm)
+
+windows()
+lm <- 40
+mutual_MX_cases = mutual(MX_cases, lag.max=lm)
+
+
+windows()
+lm <- 40
+mutual_MDF_deaths = mutual(MDF_deaths, lag.max=lm)
+
+windows()
+lm <- 40
+mutual_MX_deaths = mutual(MX_deaths, lag.max=lm)
+
+# Lo pasamos a csv para trabajar en python
+
+df <- data.frame(mutual_MDF_cases = as.vector(mutual_MDF_cases),
+                 mutual_MX_cases = as.vector(mutual_MX_cases),
+                 mutual_MDF_deaths = as.vector(mutual_MDF_deaths),
+                 mutual_MX_deaths = as.vector(mutual_MX_deaths))
+
+write.csv(df,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Modelamietno Matematico\\Chaos-Presence-SARS-CoV-II\\data_para_R\\AMI_MDF_MX.csv", row.names = FALSE)
+```
+```{r}
+# Veamos una estimacion de la Theiler Window
+
+library("nonlinearTseries", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+
+windows()
+require(nonlinearTseries)
+spaceTimePlot(time.series=MDF_cases,embedding.dim=3,time.lag=5,
+              time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
+              main="",xlab="Separation in time",ylab="Separation in space")
+# da 5
+
+library("nonlinearTseries", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+
+windows()
+require(nonlinearTseries)
+spaceTimePlot(time.series=MX_cases,embedding.dim=3,time.lag=4,
+              time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
+              main="",xlab="Separation in time",ylab="Separation in space")
+# da 8
+
+
+windows()
+require(nonlinearTseries)
+spaceTimePlot(time.series=MDF_deaths,embedding.dim=3,time.lag=3,
+              time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
+              main="",xlab="Separation in time",ylab="Separation in space")
+# 13 (muy malo)
+
+windows()
+require(nonlinearTseries)
+spaceTimePlot(time.series=MX_deaths,embedding.dim=3,time.lag=3,
+              time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
+              main="",xlab="Separation in time",ylab="Separation in space")
+# 13 (malo)
+
+```
+
+```{r}
+# Calculamos la dimension con FNN
+
+windows()
+m.max<- 6 # embedding dimensions: from 1 to m_max
+d<- 5 # tentative time deFRy (see below)
+tw<- 5 # Theiler window
+rt<- 20 # escape factor
+eps<- sd(MDF_cases)/12 # neighbourhood diameter
+fn_MDF_cases <- false.nearest(MDF_cases,m.max,d,tw,rt,eps)
+fn_MDF_cases
+
+plot(fn_MDF_cases)     # da una dimension de inmersion m = 3
+
+
+windows()
+m.max<- 6 # embedding dimensions: from 1 to m_max
+d<- 4 # tentative time deFRy (see below)
+tw<- 8 # Theiler window
+rt<- 10 # escape factor
+eps<- sd(MX_cases)/2 # neighbourhood diameter
+fn_MX_cases <- false.nearest(MX_cases,m.max,d,tw,rt,eps)
+fn_MX_cases
+
+plot(fn_MX_cases)     # da una dimension de inmersion m = 4
+
+
+windows()
+m.max<- 6 # embedding dimensions: from 1 to m_max
+d<- 3 # tentative time deFRy (see below)
+tw<- 13 #13 # Theiler window
+rt<- 10 # escape factor
+eps<- sd(MDF_deaths)/4 # neighbourhood diameter
+fn_MDF_deaths <- false.nearest(MDF_deaths,m.max,d,tw,rt,eps)
+fn_MDF_deaths
+
+plot(fn_MDF_deaths)     # da una dimension de inmersion m = 3-6
+
+
+windows()
+m.max<- 6 # embedding dimensions: from 1 to m_max
+d<- 3 # tentative time deFRy (see below)
+tw<- 13 # Theiler window
+rt<- 10 # escape factor
+eps<- sd(MX_deaths)/4 # neighbourhood diameter
+fn_MX_deaths <- false.nearest(MX_deaths,m.max,d,tw,rt,eps)
+fn_MX_deaths
+
+plot(fn_MX_deaths)     # da una dimension de inmersion m = 4-6
+
+
+```
+```{r}
+# Calculemos los MCLE
+
+windows()
+S_nu_MDF_cases <- lyap_k(MDF_cases,m=3,d=5,t=5,k=4,ref=220,s=40,eps=0.3)
+plot(S_nu_MDF_cases,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_MDF_cases = as.vector(S_nu_MDF_cases)
+
+windows()
+S_nu_MX_cases <- lyap_k(MX_cases,m=3,d=4,t=8,k=4,ref=220,s=40,eps=0.3)
+plot(S_nu_MX_cases,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_MX_cases = as.vector(S_nu_MX_cases)
+
+
+windows()
+S_nu_MDF_deaths <- lyap_k(MDF_deaths,m=4,d=3,t=13,k=4,ref=200,s=40,eps=0.3)
+plot(S_nu_MDF_deaths,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_MDF_deaths = as.vector(S_nu_MDF_deaths)
+
+windows()
+S_nu_MX_deaths <- lyap_k(MX_deaths,m=4,d=3,t=13,k=4,ref=200,s=40,eps=0.2)
+plot(S_nu_MX_deaths,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_MX_deaths = as.vector(S_nu_MX_deaths)
+```
+```{r}
+
+df_S_nu_MDF_MX <- data.frame(S_nu_MDF_cases = as.vector(S_nu_MDF_cases),
+                 S_nu_MX_cases = as.vector(S_nu_MX_cases),
+                 S_nu_MDF_deaths = as.vector(S_nu_MDF_deaths),
+                 S_nu_MX_deaths = as.vector(S_nu_MX_deaths))
+
+write.csv(df_S_nu_MDF_MX,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Modelamietno Matematico\\Chaos-Presence-SARS-CoV-II\\data_para_R\\S_nu_MDF_MX.csv", row.names = FALSE)
+
+
+```
+
+```{r}
+Corr_int_SCL_cases <- d2(SCL_cases,m=6,d=4,t=13,eps.min=0.01,neps=100) # correlation integral, m = 1,...,6
+Corr_int_SCL_cases <- data.frame(unclass(Corr_int_SCL_cases)) # class attribute removed
+
+Corr_int_CL_cases <- d2(CL_cases,m=6,d=9,t=12,eps.min=0.01,neps=100) # correlation integral, m = 1,...,6
+Corr_int_CL_cases <- data.frame(unclass(Corr_int_CL_cases)) # class attribute removed
+
+Corr_int_SCL_cases_icovid <- d2(SCL_cases,m=6,d=4,t=10,eps.min=0.01,neps=100) # correlation integral, m = 1,...,6
+Corr_int_SCL_cases_icovid <- data.frame(unclass(Corr_int_SCL_cases_icovid)) # class attribute removed
+
+
+Corr_int_SCL_deaths <- d2(SCL_deaths,m=6,d=4,t=13,eps.min=0.01,neps=100) # correlation integral, m = 1,...,6
+Corr_int_SCL_deaths <- data.frame(unclass(Corr_int_SCL_deaths)) # class attribute removed
+
+Corr_int_CL_deaths <- d2(CL_cases,m=6,d=6,t=13,eps.min=0.01,neps=100) # correlation integral, m = 1,...,6
+Corr_int_CL_deaths <- data.frame(unclass(Corr_int_CL_deaths)) # class attribute removed
+
+
+df_Corr_int_SCL_CL <- data.frame(Corr_int_SCL_cases = as.vector(Corr_int_SCL_cases),
+                 Corr_int_CL_cases = as.vector(Corr_int_CL_cases),
+                 Corr_int_SCL_cases_icovid = as.vector(Corr_int_SCL_cases_icovid),
+                 Corr_int_SCL_deaths = as.vector(Corr_int_SCL_deaths),
+                 Corr_int_CL_deaths = as.vector(Corr_int_CL_deaths))
+
+write.csv(df_Corr_int_SCL_CL,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Modelamietno Matematico\\Chaos-Presence-SARS-CoV-II\\data_para_R\\Corr_int_SCL_CL.csv", row.names = FALSE)
+
+```
+
+```{r}
+#install.packages("tseriesEntropy", dep = TRUE) # to install the package if not present
+library(tseriesEntropy)
+set.seed(546)
+MCLE_SCL_cases_surr<- numeric()
+SCL_cases.surr<- surrogate.AR(SCL_cases, order.max=10, nsurr=100)
+
+for(i in 1:100){
+  
+S_nu_SCL_cases_surr <- lyap_k(SCL_cases.surr$surr[,i],m=3,d=4,t=13,k=4,ref=220,s=40,eps=0.3)
+
+MCLE_SCL_cases_surr[i]<-lyap(S_nu_SCL_cases_surr, 3, 30) # MCLE estimate surrogates
+}
+
+set.seed(332)
+MCLE_CL_deaths_surr<- numeric()
+CL_deaths.surr<- surrogate.AR(CL_deaths, order.max=10, nsurr=100)
+for(i in 1:100){
+  
+S_nu_CL_deaths_surr <- lyap_k(CL_deaths.surr$surr[,i],m=4,d=6,t=13,k=4,ref=200,s=40,eps=0.2)
+
+MCLE_CL_deaths_surr[i]<-lyap(S_nu_CL_deaths_surr, 4, 25) # MCLE estimate surrogates
+}
+
+df_MCLE_SCL_CL_surr <- data.frame(MCLE_SCL_cases_surr = as.vector(MCLE_SCL_cases_surr),
+                                  MCLE_CL_deaths_surr = as.vector(MCLE_CL_deaths_surr))
+
+write.csv(df_MCLE_SCL_CL_surr,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Modelamietno Matematico\\Chaos-Presence-SARS-CoV-II\\data_para_R\\MCLE_surr_SCL_CL.csv", row.names = FALSE)
+
+```
