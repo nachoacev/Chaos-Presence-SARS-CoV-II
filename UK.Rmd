@@ -1,0 +1,121 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+library("tseriesChaos", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+require(scatterplot3d)
+
+library("dplyr", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+
+
+library("dplyr", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+
+library(readr)
+```
+
+```{r}
+library(readr)
+UK_cases <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/UK_cases")
+
+UK_deaths <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/UK_deaths")
+
+UK_cases = UK_cases[[1]]
+UK_deaths = UK_deaths[[1]]
+
+
+windows()
+lm <- 40
+mutual_UK_cases = mutual(UK_cases, lag.max=lm)
+
+windows()
+lm <- 40
+mutual_UK_deaths = mutual(UK_deaths, lag.max=lm)
+
+# Lo pasamos a csv para trabajar en python
+
+df <- data.frame(mutual_UK_cases = as.vector(mutual_UK_cases),
+                 mutual_UK_deaths = as.vector(mutual_UK_deaths))
+
+write.csv(df,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Modelamietno Matematico\\Chaos-Presence-SARS-CoV-II\\data_para_R\\AMI_UK.csv", row.names = FALSE)
+```
+
+```{r}
+# Veamos una estimacion de la Theiler Window
+
+library("nonlinearTseries", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+
+windows()
+require(nonlinearTseries)
+spaceTimePlot(time.series=UK_cases,embedding.dim=3,time.lag=5,
+              time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
+              main="",xlab="Separation in time",ylab="Separation in space")
+# da 13
+
+windows()
+require(nonlinearTseries)
+spaceTimePlot(time.series=UK_deaths,embedding.dim=3,time.lag=8,
+              time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
+              main="",xlab="Separation in time",ylab="Separation in space")
+# da nada claro (usamos 13)
+
+```
+
+```{r}
+# Calculamos la dimension con FNN
+
+windows()
+m.max<- 6 # embedding dimensions: from 1 to m_max
+d<- 5 # tentative time delay (see below)
+tw<- 13 # Theiler window
+rt<- 20 # escape factor
+eps<- sd(UK_cases)/12 # neighbourhood diameter
+fn_UK_cases <- false.nearest(UK_cases,m.max,d,tw,rt,eps)
+fn_UK_cases
+
+
+plot(fn_UK_cases)     # da una dimension de inmersion m = 3
+
+windows()
+m.max<- 6 # embedding dimensions: from 1 to m_max
+d<- 8 # tentative time delay (see below)
+tw<- 13 # Theiler window
+rt<- 10 # escape factor
+eps<- sd(UK_deaths)/4 # neighbourhood diameter
+fn_UK_deaths <- false.nearest(UK_deaths,m.max,d,tw,rt,eps)
+fn_UK_deaths
+
+plot(fn_UK_deaths)     # da una dimension de inmersion m = 4
+
+```
+
+```{r}
+# Calculemos los MCLE
+
+windows()
+S_nu_UK_cases <- lyap_k(UK_cases,m=3,d=5,t=13,k=4,ref=250,s=50,eps=0.3)
+plot(S_nu_UK_cases,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_UK_cases = as.vector(S_nu_UK_cases)
+
+
+windows()
+S_nu_UK_deaths <- lyap_k(UK_deaths,m=4,d=8,t=13,k=4,ref=250,s=50,eps=0.2)
+plot(S_nu_UK_deaths,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_UK_deaths = as.vector(S_nu_UK_deaths)
+```
+
+```{r}
+df_S_nu_UK <- data.frame(S_nu_UK_cases = as.vector(S_nu_UK_cases),
+                 S_nu_UK_deaths = as.vector(S_nu_UK_deaths))
+
+write.csv(df_S_nu_UK,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Modelamietno Matematico\\Chaos-Presence-SARS-CoV-II\\data_para_R\\S_nu_UK.csv", row.names = FALSE)
+
+```
+
