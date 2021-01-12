@@ -1,0 +1,151 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library("tseriesChaos", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+require(scatterplot3d)
+
+library("dplyr", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+
+
+library("dplyr", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+
+library(readr)
+```
+
+```{r}
+library(readr)
+
+lowest_sp_deaths <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/lowest_sp_deaths")
+
+high_sp_deaths <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/high_sp_deaths")
+
+highest_sp_deaths <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/highest_sp_deaths")
+
+lowest_sp_deaths = lowest_sp_deaths[[1]]
+high_sp_deaths = high_sp_deaths[[1]]
+highest_sp_deaths = highest_sp_deaths[[1]]
+
+windows()
+lm <- 40
+mutual_lowest_sp_deaths = mutual(lowest_sp_deaths, lag.max=lm)
+
+windows()
+lm <- 40
+mutual_high_sp_deaths = mutual(high_sp_deaths, lag.max=lm)
+
+windows()
+lm <- 40
+mutual_highest_sp_deaths = mutual(highest_sp_deaths, lag.max=lm)
+
+# Lo pasamos a csv para trabajar en python
+
+df <- data.frame(mutual_lowest_sp_deaths = as.vector(mutual_lowest_sp_deaths),
+                 mutual_high_sp_deaths = as.vector(mutual_high_sp_deaths),
+                 mutual_highest_sp_deaths = as.vector(mutual_highest_sp_deaths))
+
+write.csv(df,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Modelamietno Matematico\\Chaos-Presence-SARS-CoV-II\\data_para_R\\AMI_comunas_SCL.csv", row.names = FALSE)
+```
+
+```{r}
+# Veamos una estimacion de la Theiler Window
+
+library("nonlinearTseries", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+
+windows()
+require(nonlinearTseries)
+spaceTimePlot(time.series=lowest_sp_deaths,embedding.dim=3,time.lag=4,
+              time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
+              main="",xlab="Separation in time",ylab="Separation in space")
+# da 13
+
+windows()
+require(nonlinearTseries)
+spaceTimePlot(time.series=high_sp_deaths,embedding.dim=3,time.lag=8,
+              time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
+              main="",xlab="Separation in time",ylab="Separation in space")
+# da 13
+
+windows()
+require(nonlinearTseries)
+spaceTimePlot(time.series=highest_sp_deaths,embedding.dim=3,time.lag=11,
+              time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
+              main="",xlab="Separation in time",ylab="Separation in space")
+# da 10
+
+```
+
+```{r}
+# Calculamos la dimension con FNN
+
+windows()
+m.max<- 6 # embedding dimensions: from 1 to m_max
+d<- 4 # tentative time delay (see below)
+tw<- 13 # Theiler window
+rt<- 20 # escape factor
+eps<- sd(lowest_sp_deaths) # neighbourhood diameter
+fn_lowest_sp_deaths <- false.nearest(lowest_sp_deaths,m.max,d,tw,rt,eps)
+fn_lowest_sp_deaths
+
+
+plot(fn_lowest_sp_deaths)     # da una dimension de inmersion m = 4
+
+
+windows()
+m.max<- 6 # embedding dimensions: from 1 to m_max
+d<- 8 # tentative time delay (see below)
+tw<- 13 # Theiler window
+rt<- 10 # escape factor
+eps<- sd(high_sp_deaths) # neighbourhood diameter
+fn_high_sp_deaths <- false.nearest(high_sp_deaths,m.max,d,tw,rt,eps)
+fn_high_sp_deaths
+
+plot(fn_high_sp_deaths)     # da una dimension de inmersion m = 4
+
+
+windows()
+m.max<- 6 # embedding dimensions: from 1 to m_max
+d<- 11 # tentative time delay (see below)
+tw<- 13 # Theiler window
+rt<- 10 # escape factor
+eps<- sd(highest_sp_deaths) # neighbourhood diameter
+fn_highest_sp_deaths <- false.nearest(highest_sp_deaths,m.max,d,tw,rt,eps)
+fn_highest_sp_deaths
+
+plot(fn_highest_sp_deaths)     # da una dimension de inmersion m = 4
+
+```
+
+```{r}
+windows()
+S_nu_lowest_sp_deaths <- lyap_k(lowest_sp_deaths,m=3,d=4,t=13,k=4,ref=210,s=50,eps=0.3)
+plot(S_nu_lowest_sp_deaths,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_lowest_sp_deaths = as.vector(S_nu_lowest_sp_deaths)
+
+
+windows()
+S_nu_high_sp_deaths <- lyap_k(high_sp_deaths,m=3,d=8,t=13,k=4,ref=210,s=50,eps=0.3)
+plot(S_nu_high_sp_deaths,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_high_sp_deaths = as.vector(S_nu_high_sp_deaths)
+
+
+windows()
+S_nu_highest_sp_deaths <- lyap_k(highest_sp_deaths,m=3,d=11,t=10,k=4,ref=210,s=50,eps=0.3)
+plot(S_nu_highest_sp_deaths,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_highest_sp_deaths = as.vector(S_nu_highest_sp_deaths)
+
+```
+
+```{r}
+df_S_nu_comunas_SCL <- data.frame(S_nu_lowest_sp_deaths = as.vector(S_nu_lowest_sp_deaths),
+                 S_nu_high_sp_deaths = as.vector(S_nu_high_sp_deaths),
+                 S_nu_highest_sp_deaths = as.vector(S_nu_highest_sp_deaths))
+
+write.csv(df_S_nu_comunas_SCL,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Modelamietno Matematico\\Chaos-Presence-SARS-CoV-II\\data_para_R\\S_nu_comunas_SCL.csv", row.names = FALSE)
+```
+
