@@ -1,5 +1,5 @@
 #---
-# title: Analisis de Series de Tiempo No Lineal CO FR
+# title: Analisis de Series de Tiempo No Lineal SCL CL
 #---
 
 This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
@@ -285,3 +285,35 @@ write.csv(df_MCLE_SCL_CL_surr,"C:\\Users\\ignac\\OneDrive - Universidad de Chile
 
 ```
 
+```{r}
+ssa_CL_deaths <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/ssa_CL_deaths")
+
+#SCL_cases = SCL_cases[[1]]
+#CL_cases = CL_cases[[1]]
+#SCL_cases_icovid = SCL_cases_icovid[[1]]
+#SCL_deaths = SCL_deaths[[1]]
+ssa_CL_deaths = ssa_CL_deaths[[1]]
+
+```
+```{r}
+
+
+# Calculemos los MCLE de SSA
+
+
+windows()
+S_nu_ssa_CL_deaths <- lyap_k(ssa_CL_deaths,m=4,d=6,t=13,k=4,ref=200,s=40,eps=0.2)
+plot(S_nu_ssa_CL_deaths,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_ssa_CL_deaths = as.vector(S_nu_ssa_CL_deaths)
+```
+```{r}
+
+df_S_nu_ssa_SCL_CL <- data.frame(#S_nu_SCL_cases = as.vector(S_nu_SCL_cases),
+                 #S_nu_CL_cases = as.vector(S_nu_CL_cases),
+                 #S_nu_SCL_cases_icovid = as.vector(S_nu_SCL_cases_icovid),
+                 #S_nu_SCL_deaths = as.vector(S_nu_SCL_deaths),
+                 S_nu_ssa_CL_deaths = as.vector(S_nu_ssa_CL_deaths))
+
+write.csv(df_S_nu_ssa_SCL_CL,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Modelamietno Matematico\\Chaos-Presence-SARS-CoV-II\\data_para_R\\S_nu_ssa_SCL_CL.csv", row.names = FALSE)
+```
