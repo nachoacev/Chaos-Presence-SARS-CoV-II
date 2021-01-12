@@ -1,0 +1,118 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library("tseriesChaos", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+require(scatterplot3d)
+
+library("dplyr", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+
+
+library("dplyr", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+
+library(readr)
+```
+
+```{r}
+library(readr)
+FR_cases <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/FR_cases")
+
+FR_deaths <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/FR_deaths")
+
+FR_cases = FR_cases[[1]]
+FR_deaths = FR_deaths[[1]]
+
+
+windows()
+lm <- 40
+mutual_UK_cases = mutual(FR_cases, lag.max=lm)
+
+windows()
+lm <- 40
+mutual_UK_deaths = mutual(FR_deaths, lag.max=lm)
+
+# Lo pasamos a csv para trabajar en python
+
+df <- data.frame(mutual_FR_cases = as.vector(mutual_FR_cases),
+                 mutual_FR_deaths = as.vector(mutual_FR_deaths))
+
+write.csv(df,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Modelamietno Matematico\\Chaos-Presence-SARS-CoV-II\\data_para_R\\AMI_FR.csv", row.names = FALSE)
+```
+
+```{r}
+# Veamos una estimacion de la Theiler Window
+
+library("nonlinearTseries", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+
+windows()
+require(nonlinearTseries)
+spaceTimePlot(time.series=FR_cases,embedding.dim=3,time.lag=5,
+              time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
+              main="",xlab="Separation in time",ylab="Separation in space")
+# da 12
+
+windows()
+require(nonlinearTseries)
+spaceTimePlot(time.series=FR_deaths,embedding.dim=3,time.lag=8,
+              time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
+              main="",xlab="Separation in time",ylab="Separation in space")
+# da 12
+
+```
+
+```{r}
+# Calculamos la dimension con FNN
+
+windows()
+m.max<- 6 # embedding dimensions: from 1 to m_max
+d<- 5 # tentative time delay (see below)
+tw<- 13 # Theiler window
+rt<- 20 # escape factor
+eps<- sd(FR_cases)/12 # neighbourhood diameter
+fn_FR_cases <- false.nearest(FR_cases,m.max,d,tw,rt,eps)
+fn_FR_cases
+
+
+plot(fn_FR_cases)     # da una dimension de inmersion m = 3
+
+windows()
+m.max<- 6 # embedding dimensions: from 1 to m_max
+d<- 8 # tentative time delay (see below)
+tw<- 13 # Theiler window
+rt<- 10 # escape factor
+eps<- sd(FR_deaths)/4 # neighbourhood diameter
+fn_FR_deaths <- false.nearest(FR_deaths,m.max,d,tw,rt,eps)
+fn_FR_deaths
+
+plot(fn_FR_deaths)     # da una dimension de inmersion m = 4
+
+```
+
+```{r}
+# Calculemos los MCLE
+
+windows()
+S_nu_FR_cases <- lyap_k(FR_cases,m=3,d=5,t=12,k=4,ref=250,s=50,eps=0.3)
+plot(S_nu_UK_cases,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_FR_cases = as.vector(S_nu_FR_cases)
+
+
+windows()
+S_nu_FR_deaths <- lyap_k(FR_deaths,m=3,d=5,t=12,k=4,ref=250,s=50,eps=0.3)
+plot(S_nu_FR_deaths,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_FR_deaths = as.vector(S_nu_FR_deaths)
+```
+
+```{r}
+df_S_nu_FR <- data.frame(S_nu_FR_cases = as.vector(S_nu_FR_cases),
+                 S_nu_FR_deaths = as.vector(S_nu_FR_deaths))
+
+write.csv(df_S_nu_FR,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Modelamietno Matematico\\Chaos-Presence-SARS-CoV-II\\data_para_R\\S_nu_FR.csv", row.names = FALSE)
+
+```
+
