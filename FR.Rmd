@@ -28,11 +28,11 @@ FR_deaths = FR_deaths[[1]]
 
 windows()
 lm <- 40
-mutual_UK_cases = mutual(FR_cases, lag.max=lm)
+mutual_BE_cases = mutual(FR_cases, lag.max=lm)
 
 windows()
 lm <- 40
-mutual_UK_deaths = mutual(FR_deaths, lag.max=lm)
+mutual_BE_deaths = mutual(FR_deaths, lag.max=lm)
 
 # Lo pasamos a csv para trabajar en python
 
@@ -96,7 +96,7 @@ plot(fn_FR_deaths)     # da una dimension de inmersion m = 4
 
 windows()
 S_nu_FR_cases <- lyap_k(FR_cases,m=3,d=5,t=12,k=4,ref=250,s=50,eps=0.3)
-plot(S_nu_UK_cases,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+plot(S_nu_FR_cases,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
 
 S_nu_FR_cases = as.vector(S_nu_FR_cases)
 
