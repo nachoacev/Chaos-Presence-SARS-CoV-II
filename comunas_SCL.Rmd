@@ -20,17 +20,31 @@ library(readr)
 
 lowest_sp_deaths <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/lowest_sp_deaths")
 
+low_sp_deaths <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/low_sp_deaths")
+
+middle_sp_deaths <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/middle_sp_deaths")
+
 high_sp_deaths <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/high_sp_deaths")
 
 highest_sp_deaths <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/highest_sp_deaths")
 
 lowest_sp_deaths = lowest_sp_deaths[[1]]
+low_sp_deaths = low_sp_deaths[[1]]
+middle_sp_deaths = middle_sp_deaths[[1]]
 high_sp_deaths = high_sp_deaths[[1]]
 highest_sp_deaths = highest_sp_deaths[[1]]
 
 windows()
 lm <- 40
 mutual_lowest_sp_deaths = mutual(lowest_sp_deaths, lag.max=lm)
+
+windows()
+lm <- 40
+mutual_low_sp_deaths = mutual(low_sp_deaths, lag.max=lm)
+
+windows()
+lm <- 40
+mutual_middle_sp_deaths = mutual(middle_sp_deaths, lag.max=lm)
 
 windows()
 lm <- 40
@@ -43,6 +57,8 @@ mutual_highest_sp_deaths = mutual(highest_sp_deaths, lag.max=lm)
 # Lo pasamos a csv para trabajar en python
 
 df <- data.frame(mutual_lowest_sp_deaths = as.vector(mutual_lowest_sp_deaths),
+                 mutual_low_sp_deaths = as.vector(mutual_low_sp_deaths),
+                 mutual_middle_sp_deaths = as.vector(mutual_middle_sp_deaths),
                  mutual_high_sp_deaths = as.vector(mutual_high_sp_deaths),
                  mutual_highest_sp_deaths = as.vector(mutual_highest_sp_deaths))
 
@@ -63,10 +79,24 @@ spaceTimePlot(time.series=lowest_sp_deaths,embedding.dim=3,time.lag=4,
 
 windows()
 require(nonlinearTseries)
-spaceTimePlot(time.series=high_sp_deaths,embedding.dim=3,time.lag=8,
+spaceTimePlot(time.series=low_sp_deaths,embedding.dim=3,time.lag=5,
               time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
               main="",xlab="Separation in time",ylab="Separation in space")
 # da 13
+
+windows()
+require(nonlinearTseries)
+spaceTimePlot(time.series=middle_sp_deaths,embedding.dim=3,time.lag=5,
+              time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
+              main="",xlab="Separation in time",ylab="Separation in space")
+# da 15
+
+windows()
+require(nonlinearTseries)
+spaceTimePlot(time.series=high_sp_deaths,embedding.dim=3,time.lag=8,
+              time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
+              main="",xlab="Separation in time",ylab="Separation in space")
+# da 15
 
 windows()
 require(nonlinearTseries)
@@ -89,52 +119,87 @@ eps<- sd(lowest_sp_deaths) # neighbourhood diameter
 fn_lowest_sp_deaths <- false.nearest(lowest_sp_deaths,m.max,d,tw,rt,eps)
 fn_lowest_sp_deaths
 
+plot(fn_lowest_sp_deaths)     # da una dimension de inmersion m = 3
 
-plot(fn_lowest_sp_deaths)     # da una dimension de inmersion m = 4
+windows()
+m.max<- 6 # embedding dimensions: from 1 to m_max
+d<- 5 # tentative time delay (see below)
+tw<- 13 # Theiler window
+rt<- 20 # escape factor
+eps<- sd(low_sp_deaths) # neighbourhood diameter
+fn_low_sp_deaths <- false.nearest(low_sp_deaths,m.max,d,tw,rt,eps)
+fn_low_sp_deaths
+
+plot(fn_low_sp_deaths)     # da una dimension de inmersion m = 2-3
 
 
 windows()
 m.max<- 6 # embedding dimensions: from 1 to m_max
-d<- 8 # tentative time delay (see below)
+d<- 5 # tentative time delay (see below)
+tw<- 13 # Theiler window
+rt<- 20 # escape factor
+eps<- sd(middle_sp_deaths) # neighbourhood diameter
+fn_middle_sp_deaths <- false.nearest(middle_sp_deaths,m.max,d,tw,rt,eps)
+fn_middle_sp_deaths
+
+plot(fn_middle_sp_deaths)     # da una dimension de inmersion m = 2-3
+
+
+windows()
+m.max<- 6 # embedding dimensions: from 1 to m_max
+d<- 5 # tentative time delay (see below)
 tw<- 13 # Theiler window
 rt<- 10 # escape factor
 eps<- sd(high_sp_deaths) # neighbourhood diameter
 fn_high_sp_deaths <- false.nearest(high_sp_deaths,m.max,d,tw,rt,eps)
 fn_high_sp_deaths
 
-plot(fn_high_sp_deaths)     # da una dimension de inmersion m = 4
+plot(fn_high_sp_deaths)     # da una dimension de inmersion m = 3
 
 
 windows()
 m.max<- 6 # embedding dimensions: from 1 to m_max
-d<- 11 # tentative time delay (see below)
+d<- 6 # tentative time delay (see below)
 tw<- 13 # Theiler window
 rt<- 10 # escape factor
 eps<- sd(highest_sp_deaths) # neighbourhood diameter
 fn_highest_sp_deaths <- false.nearest(highest_sp_deaths,m.max,d,tw,rt,eps)
 fn_highest_sp_deaths
 
-plot(fn_highest_sp_deaths)     # da una dimension de inmersion m = 4
+plot(fn_highest_sp_deaths)     # da una dimension de inmersion m = 3-4
 
 ```
 
 ```{r}
 windows()
-S_nu_lowest_sp_deaths <- lyap_k(lowest_sp_deaths,m=3,d=4,t=13,k=4,ref=210,s=50,eps=0.3)
+S_nu_lowest_sp_deaths <- lyap_k(lowest_sp_deaths,m=3,d=4,t=13,k=4,ref=270,s=50,eps=0.3)
 plot(S_nu_lowest_sp_deaths,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
 
 S_nu_lowest_sp_deaths = as.vector(S_nu_lowest_sp_deaths)
 
 
 windows()
-S_nu_high_sp_deaths <- lyap_k(high_sp_deaths,m=3,d=8,t=13,k=4,ref=210,s=50,eps=0.3)
+S_nu_low_sp_deaths <- lyap_k(low_sp_deaths,m=3,d=5,t=13,k=4,ref=270,s=50,eps=0.3)
+plot(S_nu_low_sp_deaths,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_low_sp_deaths = as.vector(S_nu_low_sp_deaths)
+
+
+windows()
+S_nu_middle_sp_deaths <- lyap_k(middle_sp_deaths,m=3,d=5,t=13,k=4,ref=270,s=50,eps=0.3)
+plot(S_nu_middle_sp_deaths,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_middle_sp_deaths = as.vector(S_nu_middle_sp_deaths)
+
+windows()
+S_nu_high_sp_deaths <- lyap_k(high_sp_deaths,m=3,d=5,t=13,k=4,ref=270,s=50,eps=0.3)
 plot(S_nu_high_sp_deaths,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
 
 S_nu_high_sp_deaths = as.vector(S_nu_high_sp_deaths)
 
 
 windows()
-S_nu_highest_sp_deaths <- lyap_k(highest_sp_deaths,m=3,d=11,t=10,k=4,ref=210,s=50,eps=0.3)
+S_nu_highest_sp_deaths <- lyap_k(highest_sp_deaths,m=3,d=6,t=10,k=4,ref=250,s=50,eps=0.3)
 plot(S_nu_highest_sp_deaths,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
 
 S_nu_highest_sp_deaths = as.vector(S_nu_highest_sp_deaths)
@@ -143,6 +208,8 @@ S_nu_highest_sp_deaths = as.vector(S_nu_highest_sp_deaths)
 
 ```{r}
 df_S_nu_comunas_SCL <- data.frame(S_nu_lowest_sp_deaths = as.vector(S_nu_lowest_sp_deaths),
+                 S_nu_low_sp_deaths = as.vector(S_nu_low_sp_deaths),
+                 S_nu_middle_sp_deaths = as.vector(S_nu_middle_sp_deaths),
                  S_nu_high_sp_deaths = as.vector(S_nu_high_sp_deaths),
                  S_nu_highest_sp_deaths = as.vector(S_nu_highest_sp_deaths))
 
