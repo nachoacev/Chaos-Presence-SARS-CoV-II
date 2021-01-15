@@ -4,13 +4,13 @@
 
 This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
 
-Try executing this chunk by clicking the *Run* button within the chunk or by pFRcing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+Try executing this chunk by clicking the *Ru?* button within the chunk or by pFRcing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
 
 ```{r}
 library("tseriesChaos", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
 require(scatterplot3d)
 
-library("dplyr", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
+library("dplyr", lib.loc="C:/Users/ignac/?naconda3/envs/rstudio/lib/R/library")
 
 
 library("dplyr", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
@@ -20,23 +20,23 @@ library(readr)
 
 Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+When you save th? notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run aCO R code chunks. Instead, the output of the chunk when it was FRst run in the editor is dispFRyed.
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike?*Knit*, *Preview* does not run aCO R code chunks. Instead, the output of the chunk when it was FRst run in the editor is dispFRyed.
 ```{r}
 library(readr)
-SCL_cases <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/SCL_cases")
+SCL_cases <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matemati?o/Chaos-Presence-SARS-CoV-II/SCL_cases")
 CL_cases <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/CL_cases")
-SCL_cases_icovid <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/SCL_cases_icovid")
+SCL_cases_icovid <- read_csv("C:/Users/ignac/OneDrive - Universidad de Ch?le/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/SCL_cases_icovid")
 
 SCL_deaths <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/SCL_deaths")
-CL_deaths <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/CL_deaths")
+CL_deaths <- read_csv("C:?Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/CL_deaths")
 
 SCL_cases = SCL_cases[[1]]
 CL_cases = CL_cases[[1]]
 SCL_cases_icovid = SCL_cases_icovid[[1]]
 SCL_deaths = SCL_deaths[[1]]
-CL_deaths = CL_deaths[[1]]
+CL_deaths = CL_?eaths[[1]]
 ```
 
 ```{r}
@@ -52,7 +52,7 @@ mutual_CL_cases = mutual(CL_cases, lag.max=lm)
 
 windows()
 lm <- 40
-mutual_SCL_cases_icovid = mutual(SCL_cases_icovid, lag.max=lm)
+mutual_SCL_cases_icovid = mutual(SCL_cases_icovi?, lag.max=lm)
 
 windows()
 lm <- 40
@@ -64,23 +64,23 @@ mutual_CL_deaths = mutual(CL_deaths, lag.max=lm)
 
 # Lo pasamos a csv para trabajar en python
 
-df <- data.frame(mutual_SCL_cases = as.vector(mutual_SCL_cases),
+df <- data.frame(mutual_SCL_cases = as.vector(mutual_SCL_?ases),
                  mutual_CL_cases = as.vector(mutual_CL_cases),
                  mutual_SCL_cases_icovid = as.vector(mutual_SCL_cases_icovid),
                  mutual_SCL_deaths = as.vector(mutual_SCL_deaths),
-                 mutual_CL_deaths = as.vector(mutual_CL_deaths))
+                 mutual_CL_deaths = as.v?ctor(mutual_CL_deaths))
 
 write.csv(df,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Modelamietno Matematico\\Chaos-Presence-SARS-CoV-II\\data_para_R\\AMI_SCL_CL.csv", row.names = FALSE)
 ```
 ```{r}
-# Veamos una estimacion de la Theiler Window
+# Veamos una estimacion de la Theiler Win?ow
 
 library("nonlinearTseries", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R/library")
 
 windows()
 require(nonlinearTseries)
 spaceTimePlot(time.series=SCL_cases,embedding.dim=3,time.lag=4,
-              time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
+              time.step=1,number.time.steps=50, numberPercen?ages=10,do.plot=TRUE,
               main="",xlab="Separation in time",ylab="Separation in space")
 # da 13
 
@@ -88,31 +88,31 @@ library("nonlinearTseries", lib.loc="C:/Users/ignac/anaconda3/envs/rstudio/lib/R
 
 windows()
 require(nonlinearTseries)
-spaceTimePlot(time.series=CL_cases,embedding.dim=3,time.lag=3,
+spaceTimePlot(time.se?ies=CL_cases,embedding.dim=3,time.lag=4,
               time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
               main="",xlab="Separation in time",ylab="Separation in space")
 # da 12
 
 windows()
 require(nonlinearTseries)
-spaceTimePlot(time.series=SCL_cases_icovid,embedding.dim=3,time.lag=6,
+spaceTimePl?t(time.series=SCL_cases_icovid,embedding.dim=3,time.lag=6,
               time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
               main="",xlab="Separation in time",ylab="Separation in space")
 # 10 (muy mala)
 
 windows()
-require(nonlinearTseries)
+require(non?inearTseries)
 spaceTimePlot(time.series=SCL_deaths,embedding.dim=3,time.lag=5,
               time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
               main="",xlab="Separation in time",ylab="Separation in space")
 # 13
 
 windows()
-require(nonlinearTseries)
+re?uire(nonlinearTseries)
 spaceTimePlot(time.series=CL_deaths,embedding.dim=3,time.lag=6,
               time.step=1,number.time.steps=50, numberPercentages=10,do.plot=TRUE,
               main="",xlab="Separation in time",ylab="Separation in space")
-# 13 (mala)
+# 13 (mala?
 
 ```
 
@@ -125,7 +125,7 @@ d<- 4 # tentative time deFRy (see below)
 tw<- 13 # Theiler window
 rt<- 20 # escape factor
 eps<- sd(SCL_cases)/12 # neighbourhood diameter
-fn_SCL_cases <- false.nearest(SCL_cases,m.max,d,tw,rt,eps)
+fn_SCL_ca?es <- false.nearest(SCL_cases,m.max,d,tw,rt,eps)
 fn_SCL_cases
 
 plot(fn_SCL_cases)     # da una dimension de inmersion m = 3-4
@@ -133,9 +133,9 @@ plot(fn_SCL_cases)     # da una dimension de inmersion m = 3-4
 
 windows()
 m.max<- 6 # embedding dimensions: from 1 to m_max
-d<- 9 # tentative time deFRy (see below)
+d<- 4 # tentative time deFRy (see below)
 tw<- 12 # Theiler window
-rt<- 10 # escape factor
+rt?- 10 # escape factor
 eps<- sd(CL_cases)/2 # neighbourhood diameter
 fn_CL_cases <- false.nearest(CL_cases,m.max,d,tw,rt,eps)
 fn_CL_cases
@@ -144,7 +144,7 @@ plot(fn_CL_cases)     # da una dimension de inmersion m = 3
 
 
 windows()
-m.max<- 6 # embedding dimensions: from 1 to m_max
+m.max<- 6 # embedding dimensions: from 1 to m_m?x
 d<- 4 # tentative time deFRy (see below)
 tw<- 10 # Theiler window
 rt<- 10 # escape factor
@@ -152,7 +152,7 @@ eps<- sd(SCL_cases_icovid)/4 # neighbourhood diameter
 fn_SCL_cases_icovid <- false.nearest(SCL_cases_icovid,m.max,d,tw,rt,eps)
 fn_SCL_cases_icovid
 
-plot(fn_SCL_cases_icovid)     # da una dimension de inmersion m = 3
+plot(fn_SCL_case?_icovid)     # da una dimension de inmersion m = 3
 
 
 windows()
@@ -161,7 +161,7 @@ d<- 4 # tentative time deFRy (see below)
 tw<- 13 #13 # Theiler window
 rt<- 10 # escape factor
 eps<- sd(SCL_deaths)/4 # neighbourhood diameter
-fn_SCL_deaths <- false.nearest(SCL_deaths,m.max,d,tw,rt,eps)
+f?_SCL_deaths <- false.nearest(SCL_deaths,m.max,d,tw,rt,eps)
 fn_SCL_deaths
 
 plot(fn_SCL_deaths)     # da una dimension de inmersion m = 3-4
@@ -170,7 +170,7 @@ plot(fn_SCL_deaths)     # da una dimension de inmersion m = 3-4
 windows()
 m.max<- 6 # embedding dimensions: from 1 to m_max
 d<- 6 # tentative time deFRy (see below)
-tw<- 13 # Theiler window
+tw<- 13 # Theil?r window
 rt<- 10 # escape factor
 eps<- sd(CL_deaths)/4 # neighbourhood diameter
 fn_CL_deaths <- false.nearest(CL_deaths,m.max,d,tw,rt,eps)
@@ -183,33 +183,33 @@ plot(fn_CL_deaths)     # da una dimension de inmersion m = 4-5
 ```{r}
 # Calculemos los MCLE
 
-windows()
+wind?ws()
 S_nu_SCL_cases <- lyap_k(SCL_cases,m=3,d=4,t=13,k=4,ref=220,s=40,eps=0.3)
 plot(S_nu_SCL_cases,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
 
 S_nu_SCL_cases = as.vector(S_nu_SCL_cases)
 
 windows()
-S_nu_CL_cases <- lyap_k(CL_cases,m=3,d=9,t=12,k=4,ref=220,s=40,eps=0.3)
+S_nu_CL_cases <- lyap_k(CL_cases,m=3,d=?,t=12,k=4,ref=220,s=40,eps=0.3)
 plot(S_nu_CL_cases,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
 
 S_nu_CL_cases = as.vector(S_nu_CL_cases)
 
 windows()
 S_nu_SCL_cases_icovid <- lyap_k(SCL_cases_icovid,m=3,d=4,t=10,k=4,ref=220,s=40,eps=0.2)
-plot(S_nu_SCL_cases_icovid,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+p?ot(S_nu_SCL_cases_icovid,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
 
 S_nu_SCL_cases_icovid = as.vector(S_nu_SCL_cases_icovid)
 
 windows()
 S_nu_SCL_deaths <- lyap_k(SCL_deaths,m=4,d=4,t=13,k=4,ref=200,s=40,eps=0.3)
-plot(S_nu_SCL_deaths,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+plot(S_nu_SCL_deaths,xl?b = expression(paste(nu)),ylab=expression(paste("S",(nu))))
 
 S_nu_SCL_deaths = as.vector(S_nu_SCL_deaths)
 
 windows()
 S_nu_CL_deaths <- lyap_k(CL_deaths,m=4,d=6,t=13,k=4,ref=200,s=40,eps=0.2)
-plot(S_nu_CL_deaths,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+plot(S_nu_CL_deaths,xlab = expression(paste(nu)),ylab=expression(?aste("S",(nu))))
 
 S_nu_CL_deaths = as.vector(S_nu_CL_deaths)
 ```
@@ -217,46 +217,46 @@ S_nu_CL_deaths = as.vector(S_nu_CL_deaths)
 
 df_S_nu_SCL_CL <- data.frame(S_nu_SCL_cases = as.vector(S_nu_SCL_cases),
                  S_nu_CL_cases = as.vector(S_nu_CL_cases),
-                 S_nu_SCL_cases_icovid = as.vector(S_nu_SCL_cases_icovid),
+                 S_nu_SCL_cases_icovid = as.vector(?_nu_SCL_cases_icovid),
                  S_nu_SCL_deaths = as.vector(S_nu_SCL_deaths),
                  S_nu_CL_deaths = as.vector(S_nu_CL_deaths))
 
-write.csv(df_S_nu_SCL_CL,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Modelamietno Matematico\\Chaos-Presence-SARS-CoV-II\\data_para_R\\S_nu_SCL_CL.csv", row.names = FALSE)
+write.csv(df_S_nu_SCL_CL,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Modelamietno Matema?ico\\Chaos-Presence-SARS-CoV-II\\data_para_R\\S_nu_SCL_CL.csv", row.names = FALSE)
 
 
 ```
 
 ```{r}
 Corr_int_SCL_cases <- d2(SCL_cases,m=6,d=4,t=13,eps.min=0.01,neps=100) # correlation integral, m = 1,...,6
-Corr_int_SCL_cases <- data.frame(unclass(Corr_int_SCL_cases)) # class attribute removed
+Corr_int_SCL_cases <- data.frame(unclass(Corr_int_SC?_cases)) # class attribute removed
 
 Corr_int_CL_cases <- d2(CL_cases,m=6,d=9,t=12,eps.min=0.01,neps=100) # correlation integral, m = 1,...,6
 Corr_int_CL_cases <- data.frame(unclass(Corr_int_CL_cases)) # class attribute removed
 
-Corr_int_SCL_cases_icovid <- d2(SCL_cases,m=6,d=4,t=10,eps.min=0.01,neps=100) # correlation integral, m = 1,...,6
+Corr_int_SCL_cases_icovid <-?d2(SCL_cases,m=6,d=4,t=10,eps.min=0.01,neps=100) # correlation integral, m = 1,...,6
 Corr_int_SCL_cases_icovid <- data.frame(unclass(Corr_int_SCL_cases_icovid)) # class attribute removed
 
 
-Corr_int_SCL_deaths <- d2(SCL_deaths,m=6,d=4,t=13,eps.min=0.01,neps=100) # correlation integral, m = 1,...,6
+Corr_int_SCL_deaths <- d2(SCL_deaths,m=6,d=4,t=13,eps.min=0.01,neps?100) # correlation integral, m = 1,...,6
 Corr_int_SCL_deaths <- data.frame(unclass(Corr_int_SCL_deaths)) # class attribute removed
 
 Corr_int_CL_deaths <- d2(CL_cases,m=6,d=6,t=13,eps.min=0.01,neps=100) # correlation integral, m = 1,...,6
-Corr_int_CL_deaths <- data.frame(unclass(Corr_int_CL_deaths)) # class attribute removed
+Corr_int_CL_deaths?<- data.frame(unclass(Corr_int_CL_deaths)) # class attribute removed
 
 
 df_Corr_int_SCL_CL <- data.frame(Corr_int_SCL_cases = as.vector(Corr_int_SCL_cases),
                  Corr_int_CL_cases = as.vector(Corr_int_CL_cases),
-                 Corr_int_SCL_cases_icovid = as.vector(Corr_int_SCL_cases_icovid),
+                 Corr_int_SCL_cas?s_icovid = as.vector(Corr_int_SCL_cases_icovid),
                  Corr_int_SCL_deaths = as.vector(Corr_int_SCL_deaths),
                  Corr_int_CL_deaths = as.vector(Corr_int_CL_deaths))
 
-write.csv(df_Corr_int_SCL_CL,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Modelamietno Matematico\\Chaos-Presence-SARS-CoV-II\\data_para_R\\Corr_int_SCL_CL.csv", row.names = FALSE)
+write.csv(df_Corr_int_SCL_CL,"C:\\Users\\ignac\\OneDrive - Univers?dad de Chile\\Escritorio\\Modelamietno Matematico\\Chaos-Presence-SARS-CoV-II\\data_para_R\\Corr_int_SCL_CL.csv", row.names = FALSE)
 
 ```
 
 ```{r}
 #install.packages("tseriesEntropy", dep = TRUE) # to install the package if not present
-library(tseriesEntropy)
+library(tseriesEntropy?
 set.seed(546)
 MCLE_SCL_cases_surr<- numeric()
 SCL_cases.surr<- surrogate.AR(SCL_cases, order.max=10, nsurr=100)
@@ -265,7 +265,7 @@ for(i in 1:100){
   
 S_nu_SCL_cases_surr <- lyap_k(SCL_cases.surr$surr[,i],m=3,d=4,t=13,k=4,ref=220,s=40,eps=0.3)
 
-MCLE_SCL_cases_surr[i]<-lyap(S_nu_SCL_cases_surr, 3, 30) # MCLE estimate surrogates
+MCLE_SCL_cases_surr[i]<-lyap?S_nu_SCL_cases_surr, 3, 30) # MCLE estimate surrogates
 }
 
 set.seed(332)
@@ -273,23 +273,47 @@ MCLE_CL_deaths_surr<- numeric()
 CL_deaths.surr<- surrogate.AR(CL_deaths, order.max=10, nsurr=100)
 for(i in 1:100){
   
-S_nu_CL_deaths_surr <- lyap_k(CL_deaths.surr$surr[,i],m=4,d=6,t=13,k=4,ref=200,s=40,eps=0.2)
+S_nu_CL_deaths_surr <- lyap_k(CL_deaths.surr$surr[,i],m=4,d=6,t=13?k=4,ref=200,s=40,eps=0.2)
 
 MCLE_CL_deaths_surr[i]<-lyap(S_nu_CL_deaths_surr, 4, 25) # MCLE estimate surrogates
 }
 
 df_MCLE_SCL_CL_surr <- data.frame(MCLE_SCL_cases_surr = as.vector(MCLE_SCL_cases_surr),
-                                  MCLE_CL_deaths_surr = as.vector(MCLE_CL_deaths_surr))
+                                  MCLE_CL_deaths_surr ? as.vector(MCLE_CL_deaths_surr))
 
 write.csv(df_MCLE_SCL_CL_surr,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Modelamietno Matematico\\Chaos-Presence-SARS-CoV-II\\data_para_R\\MCLE_surr_SCL_CL.csv", row.names = FALSE)
 
+```
+
+
+
+```{r}
+ssa_C?_cases <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/ssa_CL_cases")
+
+#SCL_cases = SCL_cases[[1]]
+#CL_cases = CL_cases[[1]]
+#SCL_cases_icovid = SCL_cases_icovid[[1]]
+#SFR_cases = SF?_cases[[1]]
+ssa_CL_cases = ssa_CL_cases[[1]]
+
+```
+
+```{r}
+# Calculemos los MCLE de SSA
+
+
+windows()
+S_nu_ssa_CL_cases <- lyap_k(ssa_CL_cases,m=3,d=5,t=12,k=4,ref=250,s=40,eps=0.3)
+plot(S_nu_ssa_CL_cases,xlab = expression(paste(nu)),ylab=expression(paste("S"?(nu))))
+
+S_nu_ssa_CL_cases = as.vector(S_nu_ssa_CL_cases)
 ```
 
 ```{r}
 ssa_CL_deaths <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/ssa_CL_deaths")
 
 #SCL_cases = SCL_cases[[1]]
-#CL_cases = CL_cases[[1]]
+#CL_c?ses = CL_cases[[1]]
 #SCL_cases_icovid = SCL_cases_icovid[[1]]
 #SCL_deaths = SCL_deaths[[1]]
 ssa_CL_deaths = ssa_CL_deaths[[1]]
@@ -302,7 +326,7 @@ ssa_CL_deaths = ssa_CL_deaths[[1]]
 
 
 windows()
-S_nu_ssa_CL_deaths <- lyap_k(ssa_CL_deaths,m=4,d=6,t=13,k=4,ref=200,s=40,eps=0.2)
+S_nu_ssa_CL_deaths <- lyap_k(ssa_CL_deaths,m=4,d=6,t=13,k=4,ref=200,s=40,e?s=0.2)
 plot(S_nu_ssa_CL_deaths,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
 
 S_nu_ssa_CL_deaths = as.vector(S_nu_ssa_CL_deaths)
@@ -310,10 +334,10 @@ S_nu_ssa_CL_deaths = as.vector(S_nu_ssa_CL_deaths)
 ```{r}
 
 df_S_nu_ssa_SCL_CL <- data.frame(#S_nu_SCL_cases = as.vector(S_nu_SCL_cases),
-                 #S_nu_CL_cases = as.vector(S_nu_CL_cases),
+                 S_n?_ssa_CL_cases = as.vector(S_nu_ssa_CL_cases),
                  #S_nu_SCL_cases_icovid = as.vector(S_nu_SCL_cases_icovid),
                  #S_nu_SCL_deaths = as.vector(S_nu_SCL_deaths),
                  S_nu_ssa_CL_deaths = as.vector(S_nu_ssa_CL_deaths))
 
-write.csv(df_S_nu_ssa_SCL_CL,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Modelamietno Matematico\\Chaos-Presence-SARS-CoV-II\\data_para_R\\S_nu_ssa_SCL_CL.csv", row.names = FALSE)
+?rite.csv(df_S_nu_ssa_SCL_CL,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Modelamietno Matematico\\Chaos-Presence-SARS-CoV-II\\data_para_R\\S_nu_ssa_SCL_CL.csv", row.names = FALSE)
 ```
