@@ -116,3 +116,56 @@ write.csv(df_S_nu_FR,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escrito
 
 ```
 
+```{r}
+ssa_FR_cases <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/ssa_FR_cases")
+
+#SCL_cases = SCL_cases[[1]]
+#CL_cases = CL_cases[[1]]
+#SCL_cases_icovid = SCL_cases_icovid[[1]]
+#SFR_cases = SFR_cases[[1]]
+ssa_FR_cases = ssa_FR_cases[[1]]
+
+```
+
+```{r}
+# Calculemos los MCLE de SSA
+
+
+windows()
+S_nu_ssa_FR_cases <- lyap_k(ssa_FR_cases,m=3,d=5,t=12,k=4,ref=250,s=50,eps=0.3)
+plot(S_nu_ssa_FR_cases,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_ssa_FR_cases = as.vector(S_nu_ssa_FR_cases)
+```
+
+```{r}
+ssa_FR_deaths <- read_csv("C:/Users/ignac/OneDrive - Universidad de Chile/Escritorio/Modelamietno Matematico/Chaos-Presence-SARS-CoV-II/ssa_FR_deaths")
+
+#SFR_cases = SFR_cases[[1]]
+#FR_cases = FR_cases[[1]]
+#SFR_cases_icovid = SFR_cases_icovid[[1]]
+#SFR_deaths = SFR_deaths[[1]]
+ssa_FR_deaths = ssa_FR_deaths[[1]]
+
+```
+```{r}
+
+
+# Calculemos los MCLE de SSA
+
+
+windows()
+S_nu_ssa_FR_deaths <- lyap_k(ssa_FR_deaths,m=3,d=5,t=12,k=4,ref=250,s=50,eps=0.3)
+plot(S_nu_ssa_FR_deaths,xlab = expression(paste(nu)),ylab=expression(paste("S",(nu))))
+
+S_nu_ssa_FR_deaths = as.vector(S_nu_ssa_FR_deaths)
+```
+```{r}
+
+df_S_nu_ssa_FR <- data.frame(#S_nu_SFR_cases = as.vector(S_nu_SFR_cases),
+                 S_nu_ssa_FR_cases = as.vector(S_nu_ssa_FR_cases),
+                 #S_nu_SFR_cases_icovid = as.vector(S_nu_SFR_cases_icovid),
+                 #S_nu_SFR_deaths = as.vector(S_nu_SFR_deaths),
+                 S_nu_ssa_FR_deaths = as.vector(S_nu_ssa_FR_deaths))
+
+write.csv(df_S_nu_ssa_FR,"C:\\Users\\ignac\\OneDrive - Universidad de Chile\\Escritorio\\Modelamietno Matematico\\Chaos-Presence-SARS-CoV-II\\data_para_R\\S_nu_ssa_FR.csv", row.names = FALSE)
